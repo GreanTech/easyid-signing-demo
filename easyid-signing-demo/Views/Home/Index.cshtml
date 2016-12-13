@@ -1,0 +1,12 @@
+﻿@{
+    ViewBag.Title = "easyID connector";
+}
+
+    <h1>Sending message to parent frame ...</h1>
+    <p>CPR: @ViewBag.cpr</p>
+    <p>Validated?: @ViewBag.isValidated</p>
+
+    @Scripts.Render("scripts/signedin.js")
+<script>
+    window.postMessage({ "cpr": "@ViewBag.cpr", "validated": "@ViewBag.isValidated" }, "https://localhost:44300");
+</script>
