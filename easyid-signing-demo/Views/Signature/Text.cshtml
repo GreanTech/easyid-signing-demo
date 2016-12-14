@@ -1,0 +1,10 @@
+﻿@model iframe_demo.Models.SignModel
+
+<div class="container">
+    <form method="post">
+        <div class="form-group">
+            <textarea class="form-control" name="TextToSign" rows="10" cols="20" placeholder="The agreement to sign goes here">@Model.TextToSign</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Get it signed now!</button>
+    </form>
+</div>
