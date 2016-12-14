@@ -90,7 +90,7 @@ namespace iframe_demo.Controllers
                         Encoding.UTF8.GetString(
                             Convert.FromBase64String(
                                 ValueOrDefault(principal, "evidence", "")));
-                    var ppid = ValueOrDefault(principal, "ssn", "N/A");
+                    var ppid = ValueOrDefault(principal, ppidClaim, "N/A");
                     var issuer = ValueOrDefault(principal, "iss", "N/A");
                     var encoding = GetEncoding(signWith);
                     var signText =
