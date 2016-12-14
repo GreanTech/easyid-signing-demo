@@ -15,7 +15,7 @@ namespace iframe_demo.Controllers
 {
     public class SignatureController : Controller
     {
-        private readonly string signerAuthority = "https://easyid.localhost";
+        private readonly string signerAuthority = "https://easyid.www.prove.id";
         private readonly string realm = "urn:grn:app:easyid-signing-demo";
         private readonly string signWith = "urn:grn:authn:no:bankid:central";
         private readonly string ppidClaim = "ssn";
