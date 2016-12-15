@@ -17,13 +17,38 @@ namespace iframe_demo.Controllers
     {
         private readonly string signerAuthority = "https://easyid.www.prove.id";
         private readonly string realm = "urn:grn:app:easyid-signing-demo";
-        private readonly string signWith = "urn:grn:authn:no:bankid:central";
-        private readonly string ppidClaim = "ssn";
 
+        private SignMethod[] SignMethods()
+        {
+            return new[] {
+                new SignMethod {
+                    Id = "urn:grn:authn:no:bankid:central",
+                    DisplayName = "NO BankID kodebrik" },
+                new SignMethod {
+                    Id = "urn:grn:authn:no:bankid:mobile",
+                    DisplayName = "NO BankID mobil" },
+                new SignMethod {
+                    Id = "urn:grn:authn:se:bankid:same-device",
+                    DisplayName = "SE BankID denna enhet" },
+                new SignMethod {
+                    Id = "urn:grn:authn:se:bankid:another-device",
+                    DisplayName = "SE BankID annan enhet" },
+                new SignMethod {
+                    Id = "urn:grn:authn:dk:nemid:poces",
+                    DisplayName = "DK NemID privat" },
+                new SignMethod {
+                    Id = "urn:grn:authn:dk:nemid:moces",
+                    DisplayName = "DK NemID erhverv" },
+                new SignMethod {
+                    Id = "urn:grn:authn:dk:nemid:moces:codefile",
+                    DisplayName = "DK NemID nøglefil (erhverv)" },
+            };
+        }
         // GET: Signature
         public ActionResult Text()
         {
-            return View(new SignModel());
+            var model = new SignModel { SignMethods = this.SignMethods() };
+            return View(model);
         }
 
         private Encoding GetEncoding(string signMethod)
@@ -36,12 +61,33 @@ namespace iframe_demo.Controllers
             return Encoding.UTF8;
         }
 
+        private string PpidClaimType(string signMethod)
+        {
+            if (signMethod.StartsWith("urn:grn:authn:no:bankid"))
+            {
+                return "ssn";
+            }
+            if (signMethod.StartsWith("urn:grn:authn:se:bankid"))
+            {
+                return "ssn";
+            }
+            if (signMethod.StartsWith("urn:grn:authn:dk:nemid"))
+            {
+                return "cpr";
+            }
+
+            return "";
+        }
+
         // POST: Signature
         [HttpPost]
-        public ActionResult Text(SignModel model)
+        public ActionResult Text(SignModel model, string selectedSignMethod)
         {
-            var replyTo = "https://localhost:44300/Signature/Done";
-            var encoding = GetEncoding(signWith);
+            var replyTo = 
+                string.Format(CultureInfo.InvariantCulture,
+                    "https://localhost:44300/Signature/Done?selectedSignMethod={0}",
+                    selectedSignMethod);
+            var encoding = GetEncoding(selectedSignMethod);
             var signText = Convert.ToBase64String(encoding.GetBytes(model.TextToSign));
             var signerUrl =
                 String.Format(
@@ -50,7 +96,7 @@ namespace iframe_demo.Controllers
                     signerAuthority,
                     realm,
                     replyTo,
-                    signWith,
+                    selectedSignMethod,
                     signText);
             return this.Redirect(signerUrl);
         }
@@ -62,7 +108,7 @@ namespace iframe_demo.Controllers
             return c.Value;
         }
 
-        public Task<ViewResult> Done(SignedModel model)
+        public Task<ViewResult> Done(SignedModel model, string selectedSignMethod)
         {
             var client = new System.Net.Http.HttpClient();
             var oidcEndpoint = new UriBuilder(signerAuthority);
@@ -90,9 +136,10 @@ namespace iframe_demo.Controllers
                         Encoding.UTF8.GetString(
                             Convert.FromBase64String(
                                 ValueOrDefault(principal, "evidence", "")));
+                    var ppidClaim = this.PpidClaimType(selectedSignMethod);
                     var ppid = ValueOrDefault(principal, ppidClaim, "N/A");
                     var issuer = ValueOrDefault(principal, "iss", "N/A");
-                    var encoding = GetEncoding(signWith);
+                    var encoding = GetEncoding(selectedSignMethod);
                     var signText =
                         encoding.GetString(Convert.FromBase64String(
                             ValueOrDefault(principal, "signtext", "N/A")));
