@@ -48,6 +48,7 @@ namespace iframe_demo.Controllers
         public ActionResult Text()
         {
             var model = new SignModel { SignMethods = this.SignMethods() };
+            model.SignMethods.First().SetChecked();
             return View(model);
         }
 
@@ -83,9 +84,11 @@ namespace iframe_demo.Controllers
         [HttpPost]
         public ActionResult Text(SignModel model, string selectedSignMethod)
         {
+            var currentAuthority = this.Request.Url.GetLeftPart(UriPartial.Authority);
             var replyTo = 
                 string.Format(CultureInfo.InvariantCulture,
-                    "https://localhost:44300/Signature/Done?selectedSignMethod={0}",
+                    "{0}/Signature/Done?selectedSignMethod={1}",
+                    currentAuthority,
                     selectedSignMethod);
             var encoding = GetEncoding(selectedSignMethod);
             var signText = Convert.ToBase64String(encoding.GetBytes(model.TextToSign));
@@ -126,8 +129,7 @@ namespace iframe_demo.Controllers
                     var validationParams = new TokenValidationParameters();
                     validationParams.ValidIssuer = cfg.Issuer;
                     validationParams.ValidAudience = realm;
-                    validationParams.ClockSkew = TimeSpan.FromMinutes(5);
-                    validationParams.ValidateLifetime = false;
+                    validationParams.ClockSkew = TimeSpan.FromMinutes(1);
                     validationParams.IssuerSigningTokens = cfg.SigningTokens;            
                     SecurityToken token = null;
                     var principal = 
