@@ -15,7 +15,9 @@ namespace iframe_demo.Controllers
 {
     public class SignatureController : Controller
     {
+        // Substitute with your easyID tenant domain
         private readonly string signerAuthority = "https://easyid.www.prove.id";
+        // Substitue with your easyID application realm
         private readonly string realm = "urn:grn:app:easyid-signing-demo";
 
         private SignMethod[] SignMethods()
@@ -44,7 +46,8 @@ namespace iframe_demo.Controllers
                     DisplayName = "DK NemID nøglefil (erhverv)" },
             };
         }
-        // GET: Signature
+
+        // Set up the landing page with a default signing method selection
         public ActionResult Text()
         {
             var model = new SignModel { SignMethods = this.SignMethods() };
@@ -54,6 +57,7 @@ namespace iframe_demo.Controllers
 
         private Encoding GetEncoding(string signMethod)
         {
+            // Norwegian BankId does not work with UTF-8
             if (signMethod.StartsWith("urn:grn:authn:no:bankid"))
             {
                 return Encoding.GetEncoding("ISO-8859-1");
@@ -62,6 +66,7 @@ namespace iframe_demo.Controllers
             return Encoding.UTF8;
         }
 
+        // Each identity scheme may have a different naming for the PPID identifier
         private string PpidClaimType(string signMethod)
         {
             if (signMethod.StartsWith("urn:grn:authn:no:bankid"))
@@ -80,7 +85,7 @@ namespace iframe_demo.Controllers
             return "";
         }
 
-        // POST: Signature
+        // The text-to-sign is post'ed here
         [HttpPost]
         public ActionResult Text(SignModel model, string selectedSignMethod)
         {
@@ -111,8 +116,30 @@ namespace iframe_demo.Controllers
             return c.Value;
         }
 
+        private ClaimsPrincipal ValidateEndorsingSignature(
+            OpenIdConnectConfiguration cfg,
+            string rawSignatureResponse)
+        {
+            JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var validationParams = new TokenValidationParameters();
+            validationParams.ValidIssuer = cfg.Issuer;
+            validationParams.ValidAudience = realm;
+            validationParams.ClockSkew = TimeSpan.FromMinutes(1);
+            validationParams.IssuerSigningTokens = cfg.SigningTokens;
+            SecurityToken token = null;
+            // ValidateToken throws an exception if anything fails to validate.
+            return tokenHandler.ValidateToken(rawSignatureResponse, validationParams, out token);
+        }
+
+        // The response from easyID is post'ed here, because the wreply in the 
+        // HTTP POST action Text says so.
+        [HttpPost]
         public Task<ViewResult> Done(SignedModel model, string selectedSignMethod)
         {
+            // Get the OIDC metadata from easyID - in a real-life scenario,
+            // you would want to cache the response from GetConfigurationAsync 
+            // for an hour or so.
             var client = new System.Net.Http.HttpClient();
             var oidcEndpoint = new UriBuilder(signerAuthority);
             oidcEndpoint.Path = "/.well_known/openid-configuration";
@@ -123,21 +150,24 @@ namespace iframe_demo.Controllers
             return oidcConfigMgr.GetConfigurationAsync().ContinueWith(
                 r =>
                 {
-                    var cfg = r.Result;
-                    JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
-                    var tokenHandler = new JwtSecurityTokenHandler();
-                    var validationParams = new TokenValidationParameters();
-                    validationParams.ValidIssuer = cfg.Issuer;
-                    validationParams.ValidAudience = realm;
-                    validationParams.ClockSkew = TimeSpan.FromMinutes(1);
-                    validationParams.IssuerSigningTokens = cfg.SigningTokens;            
-                    SecurityToken token = null;
-                    var principal = 
-                        tokenHandler.ValidateToken(model.Signature, validationParams, out token);
-                    var evidence = 
+                    var oidcConfig = r.Result;
+
+                    // This demo implementation builds a view model with some select properties.
+                    // In real-life scenarios, you would want to store
+                    //  - the raw signature 
+                    //  - the Json Web Key(s) used for validating the JWT signature
+                    // in your data store for compliance purposes.
+                    var rawSignature = model.Signature;
+
+                    var principal =
+                        this.ValidateEndorsingSignature(oidcConfig, rawSignature);
+
+                    // The evidence property is always UTF-8 encoded
+                    var evidence =
                         Encoding.UTF8.GetString(
                             Convert.FromBase64String(
                                 ValueOrDefault(principal, "evidence", "")));
+                    // Get core properties
                     var ppidClaim = this.PpidClaimType(selectedSignMethod);
                     var ppid = ValueOrDefault(principal, ppidClaim, "N/A");
                     var issuer = ValueOrDefault(principal, "iss", "N/A");
@@ -145,14 +175,32 @@ namespace iframe_demo.Controllers
                     var signText =
                         encoding.GetString(Convert.FromBase64String(
                             ValueOrDefault(principal, "signtext", "N/A")));
-                    var displayModel = new SignatureModel {
+
+                    string endorsingKeys = SerializeEndorsingKeys(oidcConfig);
+                    var displayModel = new SignatureModel
+                    {
                         Evidence = evidence,
                         Ppid = ppid,
                         SignText = signText,
-                        Issuer = issuer
+                        Issuer = issuer,
+                        EndorsingKeys = endorsingKeys
                     };
                     return this.View("SignatureResult", displayModel);
                 });
+        }
+
+        private static string SerializeEndorsingKeys(OpenIdConnectConfiguration oidcConfig)
+        {
+            var signingKeys =
+                oidcConfig.JsonWebKeySet.Keys
+                    .Where(k => k.Use == "sig").ToArray();
+            var jsonSerializerSettings = new Newtonsoft.Json.JsonSerializerSettings();
+            jsonSerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
+            var endorsingKeys =
+                Newtonsoft.Json.JsonConvert
+                    .SerializeObject(signingKeys, Newtonsoft.Json.Formatting.Indented,
+                    jsonSerializerSettings);
+            return endorsingKeys;
         }
     }
 }

@@ -3,6 +3,8 @@
 <div class="container">
     <h4>User @Model.Ppid signed the following agreement at <code>@Model.Issuer</code></h4>
     <pre>@Model.SignText</pre>
+    <h4>The endorsing signature key:</h4>
+    <pre>@Model.EndorsingKeys</pre>
     <h4>The native signature is:</h4>
     <pre>@Model.Evidence</pre>
 </div>

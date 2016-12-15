@@ -6,5 +6,7 @@
         public string SignText { get; set; }
         public string Evidence { get; set; }
         public string Issuer { get; set; }
+
+        public string EndorsingKeys { get; set; }
     }
 }
