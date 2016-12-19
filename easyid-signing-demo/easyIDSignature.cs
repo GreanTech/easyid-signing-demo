@@ -1,8 +1,10 @@
 ﻿using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -40,7 +42,7 @@ namespace signature_demo
             this.configManager =
                     new ConfigurationManager<OpenIdConnectConfiguration>(
                         oidcEndpoint.Uri.AbsoluteUri,
-                        new System.Net.Http.HttpClient());
+                        new OpenIdConnectConfigurationRetriever());
         }
 
         public string AsRedirectUrl(string textToSign, string signatureMethod, Uri replyTo)
@@ -88,14 +90,14 @@ namespace signature_demo
         {
             var cfg = await this.configManager.GetConfigurationAsync();
 
-            JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
             var tokenHandler = new JwtSecurityTokenHandler();
+            tokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
             var validationParams = new TokenValidationParameters();
             validationParams.ValidIssuer = cfg.Issuer;
             validationParams.ValidAudience = realm;
             validationParams.ClockSkew = TimeSpan.FromMinutes(1);
-            validationParams.IssuerSigningTokens = cfg.SigningTokens;
-            SecurityToken token = null;
+            validationParams.IssuerSigningKeys = cfg.SigningKeys;
+            Microsoft.IdentityModel.Tokens.SecurityToken token = null;
             // ValidateToken throws an exception if anything fails to validate.
             return tokenHandler.ValidateToken(rawSignatureResponse, validationParams, out token);
         }
