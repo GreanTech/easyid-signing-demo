@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Owin;
-using Owin;
+﻿using Owin;
 
 namespace iframe_demo
 {
@@ -9,7 +6,6 @@ namespace iframe_demo
     {
         public void Configuration(IAppBuilder app)
         {
-            ConfigureAuth(app);
         }
     }
 }

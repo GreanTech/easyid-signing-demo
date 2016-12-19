@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Protocols;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.IdentityModel.Tokens;
 using System.Linq;
@@ -15,17 +16,21 @@ namespace iframe_demo.Controllers
 {
     public class SignatureController : Controller
     {
-        // Substitute with your easyID tenant domain
-        private readonly string signerAuthority = "https://easyid.www.prove.id";
-        // Substitue with your easyID application realm
-        private readonly string realm = "urn:grn:app:easyid-signing-demo";
+        private readonly string signerAuthority;
+        private readonly string realm;
+
+        public SignatureController()
+        {
+            this.signerAuthority = ConfigurationManager.AppSettings["easyid:signerAuthority"];
+            this.realm = ConfigurationManager.AppSettings["easyid:clientid"];
+        }
 
         private SignMethod[] SignMethods()
         {
             return new[] {
                 new SignMethod {
                     Id = "urn:grn:authn:no:bankid:central",
-                    DisplayName = "NO BankID kodebrik" },
+                    DisplayName = "NO BankID kodebrikke" },
                 new SignMethod {
                     Id = "urn:grn:authn:no:bankid:mobile",
                     DisplayName = "NO BankID mobil" },
