@@ -19,6 +19,7 @@ namespace iframe_demo.Controllers
     {
         private readonly string signerAuthority;
         private readonly string realm;
+        private readonly Task<OpenIdConnectConfiguration> oidcConfigPromise;
 
         public SignatureController()
         {
@@ -143,58 +144,54 @@ namespace iframe_demo.Controllers
         // The response from easyID is post'ed here, because the wreply in the 
         // HTTP POST action Text says so.
         [HttpPost]
-        public Task<ViewResult> Done(SignedModel model, string selectedSignMethod)
+        public async Task<ViewResult> Done(SignedModel model, string selectedSignMethod)
         {
-            // Get the OIDC metadata from easyID - in a real-life scenario,
-            // you would want to cache the response from GetConfigurationAsync 
-            // for an hour or so.
             var client = new System.Net.Http.HttpClient();
-            var oidcEndpoint = new UriBuilder(signerAuthority);
+            var oidcEndpoint = new UriBuilder(this.signerAuthority);
             oidcEndpoint.Path = "/.well_known/openid-configuration";
             var oidcConfigMgr =
                     new ConfigurationManager<OpenIdConnectConfiguration>(
                         oidcEndpoint.Uri.AbsoluteUri, client);
 
-            return oidcConfigMgr.GetConfigurationAsync().ContinueWith(
-                r =>
-                {
-                    var oidcConfig = r.Result;
+            // Get the OIDC metadata from easyID - in a real-life scenario,
+            // you would want to cache the response from GetConfigurationAsync 
+            // for an hour or so.
+            var oidcConfig = await oidcConfigMgr.GetConfigurationAsync();
 
-                    // This demo implementation builds a view model with some select properties.
-                    // In real-life scenarios, you would want to store
-                    //  - the raw signature 
-                    //  - the Json Web Key(s) used for validating the JWT signature
-                    // in your data store for compliance purposes.
-                    var rawSignature = model.Signature;
+            // This demo implementation builds a view model with some select properties.
+            // In real-life scenarios, you would want to store
+            //  - the raw signature 
+            //  - the Json Web Key(s) used for validating the JWT signature
+            // in your data store for compliance purposes.
+            var rawSignature = model.Signature;
 
-                    var principal =
-                        this.ValidateEndorsingSignature(oidcConfig, rawSignature);
+            var principal =
+                this.ValidateEndorsingSignature(oidcConfig, rawSignature);
 
-                    // The evidence property is always UTF-8 encoded
-                    var evidence =
-                        Encoding.UTF8.GetString(
-                            Convert.FromBase64String(
-                                ValueOrDefault(principal, "evidence", "")));
-                    // Get core properties
-                    var ppidClaim = this.PpidClaimType(selectedSignMethod);
-                    var ppid = ValueOrDefault(principal, ppidClaim, "N/A");
-                    var issuer = ValueOrDefault(principal, "iss", "N/A");
-                    var encoding = GetEncoding(selectedSignMethod);
-                    var signText =
-                        encoding.GetString(Convert.FromBase64String(
-                            ValueOrDefault(principal, "signtext", "N/A")));
+            // The evidence property is always UTF-8 encoded
+            var evidence =
+                Encoding.UTF8.GetString(
+                    Convert.FromBase64String(
+                        ValueOrDefault(principal, "evidence", "")));
+            // Get core properties
+            var ppidClaim = this.PpidClaimType(selectedSignMethod);
+            var ppid = ValueOrDefault(principal, ppidClaim, "N/A");
+            var issuer = ValueOrDefault(principal, "iss", "N/A");
+            var encoding = GetEncoding(selectedSignMethod);
+            var signText =
+                encoding.GetString(Convert.FromBase64String(
+                    ValueOrDefault(principal, "signtext", "N/A")));
 
-                    string endorsingKeys = SerializeEndorsingKeys(oidcConfig);
-                    var displayModel = new SignatureModel
-                    {
-                        Evidence = evidence,
-                        Ppid = ppid,
-                        SignText = signText,
-                        Issuer = issuer,
-                        EndorsingKeys = endorsingKeys
-                    };
-                    return this.View("SignatureResult", displayModel);
-                });
+            string endorsingKeys = SerializeEndorsingKeys(oidcConfig);
+            var displayModel = new SignatureModel
+            {
+                Evidence = evidence,
+                Ppid = ppid,
+                SignText = signText,
+                Issuer = issuer,
+                EndorsingKeys = endorsingKeys
+            };
+            return this.View("SignatureResult", displayModel);
         }
 
         private static string SerializeEndorsingKeys(OpenIdConnectConfiguration oidcConfig)
