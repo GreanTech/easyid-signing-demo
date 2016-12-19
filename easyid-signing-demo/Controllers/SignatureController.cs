@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Globalization;
 using System.IdentityModel.Tokens;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -101,7 +102,9 @@ namespace iframe_demo.Controllers
                     currentAuthority,
                     selectedSignMethod);
             var encoding = GetEncoding(selectedSignMethod);
-            var signText = Convert.ToBase64String(encoding.GetBytes(model.TextToSign));
+            var signText = 
+                WebUtility.UrlEncode(
+                    Convert.ToBase64String(encoding.GetBytes(model.TextToSign)));
             var signerUrl =
                 String.Format(
                     CultureInfo.InvariantCulture,
