@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace iframe_demo
+namespace signature_demo
 {
     public class BundleConfig
     {

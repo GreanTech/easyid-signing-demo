@@ -13,8 +13,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>iframe_demo</RootNamespace>
-    <AssemblyName>iframe-demo</AssemblyName>
+    <RootNamespace>signature_demo</RootNamespace>
+    <AssemblyName>signature_demo</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
@@ -148,12 +148,10 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\SignatureController.cs" />
+    <Compile Include="easyIDSignature.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\SignatureModel.cs" />
-    <Compile Include="Models\SignedModel.cs" />
-    <Compile Include="Models\SignModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -166,6 +164,7 @@
     <Content Include="Content\Site.css" />
     <None Include="Properties\PublishProfiles\iframe-demo.pubxml" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\dropdownPopulate.js" />
     <Content Include="Scripts\dropdownSubmit.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\signedin.js" />
@@ -185,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

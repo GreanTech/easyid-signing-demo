@@ -9,7 +9,7 @@ using System.IdentityModel.Services;
 using Microsoft.IdentityModel.Protocols;
 using System.Configuration;
 
-namespace iframe_demo
+namespace signature_demo
 {
     public class MvcApplication : System.Web.HttpApplication
     {

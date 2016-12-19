@@ -1,6 +1,6 @@
 ﻿using Owin;
 
-namespace iframe_demo
+namespace signature_demo
 {
     public partial class Startup
     {
