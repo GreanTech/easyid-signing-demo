@@ -34,7 +34,9 @@ namespace signature_demo.Controllers
             // the signature once the user has signed the text
             var currentAuthority = this.Request.Url.GetLeftPart(UriPartial.Authority);
             var ub = new UriBuilder(currentAuthority);
+            // Poor Man's Routing
             ub.Path = "/Signature/Done";
+            // simplistic state machine that roundtrips the actual signature method via easyID.
             ub.Query = "selectedSignMethod=" + selectedSignMethod;
             var replyTo = ub.Uri;
 

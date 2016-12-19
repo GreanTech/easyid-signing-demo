@@ -97,7 +97,7 @@ namespace signature_demo
             validationParams.ValidAudience = realm;
             validationParams.ClockSkew = TimeSpan.FromMinutes(1);
             validationParams.IssuerSigningKeys = cfg.SigningKeys;
-            Microsoft.IdentityModel.Tokens.SecurityToken token = null;
+            SecurityToken token = null;
             // ValidateToken throws an exception if anything fails to validate.
             return tokenHandler.ValidateToken(rawSignatureResponse, validationParams, out token);
         }
