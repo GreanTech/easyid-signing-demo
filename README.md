@@ -30,6 +30,11 @@ and change the values of the following `appSetting` entries in `web.config`:
 Point your browser to the root of the application, and enter the text you would like to have signed 
 in the input field. Select the desired method for siging, and let the process run its course.
 
+The UI uses full-blown browser redirection for the signature flow - as this is the 
+simplest way, and also the one with the broadest reach (all signature methods supports this on all platforms).
+Most of the methods can also be run inside an iframe, should you want a more embedded experience (white-labelling scenarios).
+For an up-to-date view of the frame-able methods, check out the `easyID` authentication demo site on [GitHub](https://www.github.com/greantech/easyiddemo)
+
 ## Demo code walkthrough
 The HTTP layer consists of a single controller: `SignatureController`. 
 The controller handles the routing, which is not very advanced here, and uses the classes in
@@ -37,8 +42,4 @@ the `easyIDSignature.cs` module to handle the interation with `easyID`.
 The module also wraps the details of .NET's JWT parsing and validation, 
 and the peculiarities of the different signature schemes supported by `easyID`.
 
-The UI uses full-blown browser redirection for the signature flow - as this is the 
-simplest way, and also the one with the broadest reach (all signature methods supports this on all platforms).
-Most of the methods can also be run inside an iframe, should you want a more embedded experience (white-labelling scenarios).
-For an up-to-date view of the frame-able methods, check out the `easyID` authentication demo site on [GitHub](https://www.github.com/greantech/easyiddemo)
 
