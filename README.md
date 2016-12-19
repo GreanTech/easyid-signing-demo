@@ -22,7 +22,7 @@ the solution in VS 2015.
 
 You can of course use your own `easyID` tenant for this as well. In that case, you'll need to register 
 an application in `easyID` with a proper returnUrl (value for this demo is `https://localhost:44300/Signature/Done`), 
-and change the values of the following `appSetting` entries in 'web.config':
+and change the values of the following `appSetting` entries in `web.config`:
 - `easyid:signerAuthority`
 - `easyid:clientid`
 
