@@ -34,7 +34,7 @@ namespace signature_demo.Controllers
             agreementRequestRepository = new ConcurrentDictionary<Guid, Agreement>();
         }
 
-        // Set up the landing page with a default signing method selection
+        // Set up the landing page with the available signing methods
         [HttpGet]
         public ActionResult Text()
         {

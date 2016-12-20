@@ -148,9 +148,6 @@ namespace signature_demo
             if (signature == null) throw new ArgumentNullException("signature");
             if (signatureMethod == null) throw new ArgumentNullException("signatureMethod");
 
-            // Get the OIDC metadata from easyID - in a real-life scenario,
-            // you would want to cache the response from GetConfigurationAsync 
-            // for an hour or so.
             var principal = await this.ValidateEndorsingSignature(signature);
 
             // The evidence property is always UTF-8 encoded

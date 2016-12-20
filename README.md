@@ -59,11 +59,25 @@ and change the values of the following `appSetting` entries in `web.config`:
 - `easyid:applicationRealm`
 
 
-## Demo code walkthrough
+## Points of interest in the code
 The HTTP layer consists of a single controller: `SignatureController`. 
 The controller handles the routing, which is not very advanced here, and uses the classes in
 the `easyIDSignature.cs` module to handle the interation with `easyID`.
-The module also wraps the details of .NET's JWT parsing and validation, 
+
+The `SignatureController` has 3 action methods:
+- `Text` (HTTP GET): Displays the landing page
+- `Text` (HTTP POST): Receives the designated text-to-sign, and the selected signature method. Starts the signing process with `easyID`.
+- `Done` (HTTP POST): Receives the signed document from `easyID`, and does the validation.
+Check the comments in the code for further details - and please do send us a 
+[Pull Request](https://github.com/greantech/easyid-signing-demo/pulls)
+if you have suggestions, or find that the documentation is lacking.
+
+The `easyIDSignature.cs` module wraps the details of .NET's JWT parsing and validation, 
 and the peculiarities of the different signature schemes supported by `easyID`.
+Expect quite a few nitty-gritty details if you decide to take a peek at it, but we
+certainly encourage you to do so: If you are already familiar with OpenID Connect and JWT's, it 
+should contain no surprises. If not, we hope it can serve as a starting point for getting aqcuainted
+with these matters.
+
 
 
