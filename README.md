@@ -27,7 +27,6 @@ the JWT signing keys, in your data store of choice. That is required in case a u
 the validity of the agreement later on.
 
 Finally, you must validate that the text which was signed matches what you asked `easyID` to sign.
-The code contains some notes on how you could go about doing that by leveraging the users session.
 
 And that's all there is to it - your web site can now go ahead and proceed with whatever was agreed
 upon by the user.
