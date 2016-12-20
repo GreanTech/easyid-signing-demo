@@ -26,7 +26,12 @@ namespace signature_demo.Controllers
             return View();
         }
 
-        // The text-to-sign is post'ed here
+        // The text-to-sign is post'ed here, as specified by the user.
+        // That is not what you would want to do on your actual website.
+        // More likely, you have an agreement repository somewhere, and 
+        // you roundtrip the Id of the agreement via the browser.
+        // You must keep track of the selected Id server-side, as it is
+        // needed for validation later on.
         [HttpPost]
         public ActionResult Text(string textToSign, string selectedSignMethod)
         {
@@ -44,18 +49,26 @@ namespace signature_demo.Controllers
             return this.Redirect(signerUrl);
         }
 
-        // The response from easyID is post'ed here, because the replyTo variable in the 
-        // HTTP POST action Text just above says so.
+        // The response from easyID is post'ed here, because the `replyTo` variable in the 
+        // HTTP POST action `Text` points to this path.
         // This demo implementation builds a view model with some select properties.
         // In real-life scenarios, you would want to store
-        //  - the raw signature as POST'ed by easyID
-        //  - the Json Web Key(s) used for validating the JWT signature
+        //  - the raw signature as POST'ed by easyID (the `signature` parameter)
+        //  - the Json Web Key(s) used for validating the JWT signature.
+        //    These are present in serialized form in the `EndorsingKeys` property
+        //    on the return value from `signatureRequester.ValidateSignature`.
         // in your data store for compliance and non-repudiation purposes.
         [HttpPost]
         public async Task<ViewResult> Done(string signature, string selectedSignMethod)
         {
             var displayModel = 
                 await signatureRequester.ValidateSignature(signature, selectedSignMethod);
+            // Get the expected text by looking it up in your agreement repository
+            // based on the Id stored in the users session. This demo let's the
+            // user control the text to sign, so we'll let it pass.
+            var expectedText = displayModel.SignText;
+            if (displayModel.SignText != expectedText)
+                throw new InvalidOperationException("The signed text has been modified in-flight.");
             return this.View("SignatureResult", displayModel);
         }
     }
