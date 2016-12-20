@@ -15,8 +15,8 @@ namespace signature_demo.Controllers
         {
             signatureRequester =
                 new SignatureRequester(
-                    ConfigurationManager.AppSettings["easyid:signerAuthority"],
-                    ConfigurationManager.AppSettings["easyid:clientid"]);
+                    ConfigurationManager.AppSettings["easyid:tenantAuthority"],
+                    ConfigurationManager.AppSettings["easyid:applicationRealm"]);
         }
 
         // Set up the landing page with a default signing method selection
