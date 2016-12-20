@@ -19,7 +19,7 @@ Select the desired method for document signing in the dropdown, and the process 
 a browser redirection to `easyID`.
 
 `easyID` will then start and run the flow for the selected signature method, and when done, 
-'easyID` will deliver the signed document back to your website.
+`easyID` will deliver the signed document back to your website.
 
 Once delivered, you can use your designated JWT signature validation library to ensure that the
 response did indeed come from your `easyID` tenant. If so, you must store the raw response, along with
