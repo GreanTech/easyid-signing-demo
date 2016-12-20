@@ -22,11 +22,12 @@ a browser redirection to `easyID`.
 `easyID` will deliver the signed document back to your website.
 
 Once delivered, you can use your designated JWT signature validation library to ensure that the
-response did indeed come from your `easyID` tenant. If so, you must store the raw response, along with
-the JWT signing keys, in your data store of choice. That is required in case a user ever questions
-the validity of the agreement later on.
+response did indeed come from your `easyID` tenant, and you must validate that the text which was 
+signed matches what you asked `easyID` to sign.
 
-Finally, you must validate that the text which was signed matches what you asked `easyID` to sign.
+If so, you must store the raw response, along with the JWT signing keys, 
+in your data store of choice. That is required in case a user ever questions
+the validity of the agreement later on.
 
 And that's all there is to it - your web site can now go ahead and proceed with whatever was agreed
 upon by the user.
