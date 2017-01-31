@@ -45,6 +45,14 @@ namespace signature_demo.Controllers
         [HttpPost]
         public ActionResult Text(string textToSign, string selectedSignMethod)
         {
+            if (string.IsNullOrWhiteSpace(textToSign))
+            {
+                var response = new ContentResult();
+                response.Content = "Text to sign cannot be blank";
+                this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return response;
+            }
+
             // Set up the desired target URL, so easyID knows where to POST
             // the signature once the user has signed the text
             var currentAuthority = this.Request.Url.GetLeftPart(UriPartial.Authority);
