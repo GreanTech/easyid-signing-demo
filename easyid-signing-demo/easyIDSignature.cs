@@ -38,7 +38,7 @@ namespace signature_demo
             this.signerAuthority = signerAuthority;
             this.realm = realm;
             var oidcEndpoint = new UriBuilder(this.signerAuthority);
-            oidcEndpoint.Path = "/.well_known/openid-configuration";
+            oidcEndpoint.Path = "/.well-known/openid-configuration";
             this.configManager =
                     new ConfigurationManager<OpenIdConnectConfiguration>(
                         oidcEndpoint.Uri.AbsoluteUri,
