@@ -41,9 +41,19 @@ namespace signature_demo.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult Framed()
+        {
+            return View("Framed", 
+                new TrustedSenderRepresentation { Origin = signatureRequester.SignerAuthority });
+        }
+
         // The text-to-sign is post'ed here, as specified by the user.
         [HttpPost]
-        public ActionResult Text(string textToSign, string selectedSignMethod)
+        public ActionResult Text(
+            string textToSign, 
+            string selectedSignMethod, 
+            string responseStrategy)
         {
             if (string.IsNullOrWhiteSpace(textToSign))
                 textToSign = "The agreement to sign goes here";
@@ -66,7 +76,9 @@ namespace signature_demo.Controllers
                     requestId.ToString()));
             var replyTo = ub.Uri;
 
-            var signerUrl = signatureRequester.AsRedirectUrl(textToSign, selectedSignMethod, replyTo);
+            var signerUrl = 
+                signatureRequester.AsRedirectUrl(
+                    textToSign, selectedSignMethod, replyTo, responseStrategy);
             return this.Redirect(signerUrl);
         }
 

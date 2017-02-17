@@ -12,12 +12,16 @@
             <div class="dropdown dropdown-submit-input">
                 <input type="hidden" name="selectedSignMethod" id="selectedSignMethod" />
                 <button class="btn btn-default dropdown-toggle"
-                    type="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
+                        type="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
                     Get it signed now!<span class="caret"></span>
                 </button>
-                <ul id="signMethods" class="dropdown-menu" aria-labelledby="dropdownMenu1" role="menu">
-                </ul>
+                <ul id="signMethods" class="dropdown-menu" aria-labelledby="dropdownMenu1" role="menu"></ul>
+                <div class="pull-right vcenter">
+                    <label class="text-muted">Deliver response to:</label>
+                    <label class="radio-inline"><input type="radio" name="responseStrategy" value="formPost" checked>Backend</label>
+                    <label class="radio-inline"><input type="radio" name="responseStrategy" value="postMessage">Frontend</label>
+                </div>
             </div>
         </div>
     </form>

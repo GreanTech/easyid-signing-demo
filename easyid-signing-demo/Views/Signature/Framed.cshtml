@@ -1,0 +1,25 @@
+﻿@{
+    Layout = null;
+}
+@model signature_demo.TrustedSenderRepresentation
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Framed</title>
+    <script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/postMessageListener.js"></script>
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css">
+</head>
+<body>
+    <div class="container"> 
+        <iframe src="/" width="640px" height="640px" frameborder="0"></iframe>
+        <div id="rawSignature" class="hidden">
+            <h4>Raw signature JWT</h4>
+        </div>
+    </div>
+    <input type="hidden" name="signerAuthority" value="@Model.Origin" />
+</body>
+</html>

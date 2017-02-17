@@ -24,6 +24,11 @@ namespace signature_demo
         public string EndorsingKeys { get; set; }
     }
 
+    public class TrustedSenderRepresentation
+    {
+        public string Origin { get; set; }
+    }
+
     public class SignatureRequester
     {
         private readonly string signerAuthority;
@@ -45,7 +50,11 @@ namespace signature_demo
                         new OpenIdConnectConfigurationRetriever());
         }
 
-        public string AsRedirectUrl(string textToSign, string signatureMethod, Uri replyTo)
+        public string AsRedirectUrl(
+            string textToSign, 
+            string signatureMethod, 
+            Uri replyTo,
+            string responseStrategy)
         {
             if (textToSign == null) throw new ArgumentNullException("textToSign");
             if (string.IsNullOrWhiteSpace(textToSign))
@@ -61,15 +70,19 @@ namespace signature_demo
             var signText =
                 WebUtility.UrlEncode(
                     Convert.ToBase64String(encoding.GetBytes(textToSign)));
-            var signerUrl =
+            var ub = new UriBuilder(signerAuthority);
+            ub.Path = "/sign/text";
+            var query =
                 String.Format(
                     CultureInfo.InvariantCulture,
-                    "{0}/sign/text/?wa=wsignin1.0&wtrealm={1}&wreply={2}&wauth={3}&signtext={4}",
-                    this.signerAuthority, this.realm,
+                    "wa=wsignin1.0&wtrealm={0}&wreply={1}&wauth={2}&signtext={3}&responseStrategy={4}",
+                    this.realm,
                     replyTo,
                     signatureMethod,
-                    signText);
-            return signerUrl;
+                    signText,
+                    responseStrategy);
+            ub.Query = query;
+            return ub.Uri.AbsoluteUri;
         }
 
         // Each signature scheme may have a different encoding rules
@@ -175,5 +188,7 @@ namespace signature_demo
                 EndorsingKeys = endorsingKeys
             };
         }
+
+        public string SignerAuthority { get { return this.signerAuthority; } }
     }
 }
