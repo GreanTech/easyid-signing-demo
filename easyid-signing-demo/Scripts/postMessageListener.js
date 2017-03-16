@@ -27,7 +27,7 @@ eventer(messageEvent, function (e) {
                 pre.innerText = e.data.signature;
                 let rawSig = $('#rawSignature')
                 rawSig.append(pre);
-                rawSig.removeClass('hidden').addClass('show');
+                rawSig.show();
             }
         }
     }

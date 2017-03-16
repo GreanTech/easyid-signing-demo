@@ -39,3 +39,9 @@ $.each(signMethods, function (index, m) {
         .text(m.DisplayName)
         .appendTo(li);
 });
+
+if (top !== self) {
+    $('#responseStrategy').show();
+} else {
+    $('#responseStrategy').hide();
+}

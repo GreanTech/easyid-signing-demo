@@ -1,9 +1,11 @@
-﻿<script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js" defer></script>
+﻿@model signature_demo.TrustedSenderRepresentation
+
+<script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js" defer></script>
 <script type="text/javascript" src="~/Scripts/bootstrap.min.js" defer></script>
 <script type="text/javascript" src="~/Scripts/dropdownPopulate.js" defer></script>
 <script type="text/javascript" src="~/Scripts/dropdownSubmit.js" defer></script>
 <div class="container">
-    <form method="post">
+    <form method="post" id="signForm" action="/Signature/Text">
         <div class="form-group row">
             <label for="TextToSign" class="sr-only">Text to sign</label>
             <textarea name="TextToSign" class="form-control" rows="10" cols="100" placeholder="The agreement to sign goes here" required></textarea>
@@ -17,7 +19,7 @@
                     Get it signed now!<span class="caret"></span>
                 </button>
                 <ul id="signMethods" class="dropdown-menu" aria-labelledby="dropdownMenu1" role="menu"></ul>
-                <div class="pull-right vcenter">
+                <div class="pull-right vcenter collapse" id="responseStrategy">
                     <label class="text-muted">Deliver response to:</label>
                     <label class="radio-inline"><input type="radio" name="responseStrategy" value="formPost" checked>Backend</label>
                     <label class="radio-inline"><input type="radio" name="responseStrategy" value="postMessage">Frontend</label>
@@ -25,4 +27,10 @@
             </div>
         </div>
     </form>
+
+    <input type="hidden" name="signerAuthority" value="@Model.Origin" />
+    <iframe src="" id="signFrame" title="easyID" allowfullscreen="true" scrolling="no" frameborder="0" class="hidden-frame"></iframe>
+    <div id="rawSignature" class="collapse">
+        <h4>Raw signature JWT</h4>
+    </div>
 </div>

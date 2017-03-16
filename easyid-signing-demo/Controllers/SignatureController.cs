@@ -34,18 +34,26 @@ namespace signature_demo.Controllers
             agreementRequestRepository = new ConcurrentDictionary<Guid, Agreement>();
         }
 
+        private TrustedSenderRepresentation TrustedSender
+        {
+            get
+            {
+                return new TrustedSenderRepresentation {
+                    Origin = signatureRequester.SignerAuthority
+                };
+            }
+        }
         // Set up the landing page with the available signing methods
         [HttpGet]
         public ActionResult Text()
         {
-            return View();
+            return View(this.TrustedSender);
         }
 
         [HttpGet]
         public ActionResult Framed()
         {
-            return View("Framed", 
-                new TrustedSenderRepresentation { Origin = signatureRequester.SignerAuthority });
+            return View(this.TrustedSender);
         }
 
         // The text-to-sign is post'ed here, as specified by the user.

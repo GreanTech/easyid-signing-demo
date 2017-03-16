@@ -166,6 +166,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\dropdownPopulate.js" />
     <Content Include="Scripts\dropdownSubmit.js" />
+    <Content Include="Scripts\embedding.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\postMessageListener.js" />
     <Content Include="Scripts\signedin.js" />

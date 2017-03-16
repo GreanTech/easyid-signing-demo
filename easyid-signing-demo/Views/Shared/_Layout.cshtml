@@ -6,15 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/Content/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/Site.css">
+    <script type="text/javascript" src="~/Scripts/embedding.js"></script>
+    <script type="text/javascript" src="~/Scripts/postMessageListener.js"></script>
 </head>
 <body>
-        @RenderBody()
-        <div class="container body-content">
-            <hr />
-            <footer>
-                <p class="pull-left">Sign up for a free easyID account on <a href="https://www.grean.com">grean.com</a></p>
-                <p class="pull-right">Source code for this demo is on <a href="https://www.github.com/greantech/easyid-signing-demo">GitHub</a></p>
-            </footer>
+    <div class="container">
+        <div class="form-group row">
+            <button class="btn btn-default" type="button" aria-expanded="false" onclick="showInFrame()">
+                IFRAME'd
+            </button>
+            <button class="btn btn-default" type="button" aria-expanded="false" onclick="showInDocument()">
+                Redirected
+            </button>
         </div>
+    </div>
+    @RenderBody()
+    <div class="container body-content">
+        <hr />
+        <footer>
+            <p class="pull-left">Sign up for a free easyID account on <a href="https://www.grean.com">grean.com</a></p>
+            <p class="pull-right">Source code for this demo is on <a href="https://www.github.com/greantech/easyid-signing-demo">GitHub</a></p>
+        </footer>
+    </div>
 </body>
 </html>
