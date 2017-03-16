@@ -38,7 +38,11 @@ simplest way, and also the one with the broadest reach (all signature methods su
 Most of the methods can also be run inside an iframe, should you want a more embedded experience (white-labelling scenarios).
 For an up-to-date view of the frame-able methods, check out the `easyID` authentication demo site on [GitHub](https://www.github.com/greantech/easyiddemo)
 
-The signed document is delivered with an HTTP POST to your website, on a URL that is entirely under
+You can choose between two delivery mechanisms for the resulting signed document: 
+- HTTP POST (the default): Result is sent to your backend via an auto-submitting form.
+- DOM event: Result is made available in the browser via the `window.postMessage` API. Add a `responseStrategy=postMessage` query string parameter in the request to `easyID` to use this delivery mechanism. And you will need to load `easyID` in an iframe for this to work. 
+
+In any case, the signed document is delivered on a URL, or window, which is entirely under
 your control. You have to pre-register the desired target URL in `easyID` first, though, to avoid 
 phishing attacks (and the like) against your users. You can roundtrip dynamic state parameters through 
 `easyID` by adding them to the query string. 
@@ -57,7 +61,6 @@ an application in `easyID` with a proper returnUrl (value for this demo is `http
 and change the values of the following `appSetting` entries in `web.config`:
 - `easyid:tenantAuthority`
 - `easyid:applicationRealm`
-
 
 ## Points of interest in the code
 The HTTP layer consists of a single controller: `SignatureController`. 
