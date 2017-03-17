@@ -20,3 +20,8 @@ function showInDocument() {
     delete frame.src;
     $('#signForm').show();
 }
+
+function retrieveSignature(src) {
+    let frame = document.getElementById('signatureRetrieveFrame');
+    frame.src = src;
+}

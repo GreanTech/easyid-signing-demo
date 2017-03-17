@@ -41,7 +41,7 @@ $.each(signMethods, function (index, m) {
 });
 
 if (top !== self) {
-    $('#responseStrategy').show();
+    $('#responseStrategyPostMessage').show();
 } else {
-    $('#responseStrategy').hide();
+    $('#responseStrategyPostMessage').hide();
 }

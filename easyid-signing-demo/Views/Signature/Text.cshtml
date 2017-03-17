@@ -18,10 +18,11 @@
                     Get it signed now!<span class="caret"></span>
                 </button>
                 <ul id="signMethods" class="dropdown-menu" aria-labelledby="dropdownMenu1" role="menu"></ul>
-                <div class="pull-right vcenter collapse" id="responseStrategy">
-                    <label class="text-muted">Deliver response to:</label>
-                    <label class="radio-inline"><input type="radio" name="responseStrategy" value="formPost" checked>Backend</label>
-                    <label class="radio-inline"><input type="radio" name="responseStrategy" value="postMessage">Frontend</label>
+                <div class="pull-right vcenter">
+                    <label class="text-muted">Deliver response via:</label>
+                    <label class="radio text-muted"><input type="radio" name="responseStrategy" value="formPost" checked>HTTP POST</label>
+                    <label class="radio text-muted"><input type="radio" name="responseStrategy" value="urlFragment">URL fragment</label>
+                    <label class="radio text-muted collapse" id="responseStrategyPostMessage"><input type="radio" name="responseStrategy" value="postMessage">window.postMessage</label>
                 </div>
             </div>
         </div>
