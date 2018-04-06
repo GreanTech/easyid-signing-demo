@@ -28,8 +28,8 @@ namespace signature_demo.Controllers
         {
             signatureRequester =
                 new SignatureRequester(
-                    ConfigurationManager.AppSettings["easyid:tenantAuthority"],
-                    ConfigurationManager.AppSettings["easyid:applicationRealm"]);
+                    ConfigurationManager.AppSettings["verify:tenantAuthority"],
+                    ConfigurationManager.AppSettings["verify:applicationRealm"]);
 
             agreementRequestRepository = new ConcurrentDictionary<Guid, Agreement>();
         }
@@ -66,14 +66,14 @@ namespace signature_demo.Controllers
             if (string.IsNullOrWhiteSpace(textToSign))
                 textToSign = "The agreement to sign goes here";
 
-            // Set up the desired target URL, so easyID knows where to POST
+            // Set up the desired target URL, so Criipto Verify knows where to POST
             // the signature once the user has signed the text
             var currentAuthority = this.Request.Url.GetLeftPart(UriPartial.Authority);
             var ub = new UriBuilder(currentAuthority);
             // Poor Man's Routing
             ub.Path = "/Signature/Done";
             // simplistic state machine that roundtrips the actual signature method 
-            // and the unique requestId via easyID.
+            // and the unique requestId via Criipto Verify.
             var requestId = Guid.NewGuid();
             this.PushRequestState(requestId, textToSign);
             ub.Query = 
@@ -106,11 +106,11 @@ namespace signature_demo.Controllers
             return a.Text;
         }
 
-        // The response from easyID is post'ed here, because the `replyTo` variable in the 
+        // The response from Criipto Verify is post'ed here, because the `replyTo` variable in the 
         // HTTP POST action `Text` points to this path.
         // This demo implementation builds a view model with some select properties.
         // In real-life scenarios, you would want to store
-        //  - the raw signature as POST'ed by easyID (the `signature` parameter)
+        //  - the raw signature as POST'ed by Criipto Verify (the `signature` parameter)
         //  - the Json Web Key(s) used for validating the JWT signature.
         //    These are present in serialized form in the `EndorsingKeys` property
         //    on the return value from `signatureRequester.ValidateSignature`.
