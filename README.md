@@ -1,8 +1,8 @@
 # Welcome to the Criipto Verify document signature demo repository
 
-*If you need a legal agreement with your customers, then look no further. `Criipto Verify` will get you going in a few minutes*
+*This sample levarages Criipto Verify for signing documents.*
 
-To make this happen on your own website(s), you will need 2 things:
+To sign documents (text) on your own website(s), you will need 2 things:
 - An `Criipto Verify` account (you can sign up for a free test account on [criipto.com](https://www.criipto.com))
 - A small amount of work on your website
 
