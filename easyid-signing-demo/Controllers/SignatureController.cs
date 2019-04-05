@@ -141,5 +141,17 @@ namespace signature_demo.Controllers
 
             return this.View("SignatureResult", displayModel);
         }
+
+        // An entirely forgiving endpoint, which is ONLY useful for displaying 
+        // the contents of a response from Criipto Verify>
+        // It does not check if the user has altered the text to be signed. 
+        // Do NOT, under ANY circumstances, take this approach for production purposes.
+        [HttpPost]
+        public async Task<ActionResult> Show(string signature, string selectedSignMethod)
+        {
+            var displayModel =
+                await signatureRequester.ValidateSignature(signature, selectedSignMethod);
+            return this.View("SignatureResult", displayModel);
+        }
     }
 }
