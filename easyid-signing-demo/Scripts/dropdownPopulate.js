@@ -16,6 +16,10 @@
         DisplayName: "SE BankID annan enhet"
     },
     {
+        Id: "urn:grn:authn:se:bankid:another-device:qr",
+        DisplayName: "SE BankID QR"
+    },
+    {
         Id: "urn:grn:authn:dk:nemid:poces",
         DisplayName: "DK NemID privat"
     },
